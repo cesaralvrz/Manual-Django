@@ -26,10 +26,10 @@ Se creara una carpeta que tendrá otra carpeta con él mismo nombre y un archivo
 
 En la carpeta habrá 4 documentos:
 
-	* _init_.py (Necesario para que Python reconozca que existe un paquete)
-	* settings.py (Archivo principal del proyecto, el centro de configuración)
-	* urls.py (Sistema de Routing de Urls que contiene un lista de ‘paths’)
-	* wsgi.py (Web server que nos crea Django)
+- _init_.py (Necesario para que Python reconozca que existe un paquete)
+- settings.py (Archivo principal del proyecto, el centro de configuración)
+- urls.py (Sistema de Routing de Urls que contiene un lista de ‘paths’)
+- wsgi.py (Web server que nos crea Django)
 
 Adentro de “settings.py” cuando queremos que Django sepa de una nueva instalación lo especificamos en “INSTALLED_APPS”. 
 
