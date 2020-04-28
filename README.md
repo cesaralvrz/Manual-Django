@@ -25,6 +25,7 @@ Luego creamos un Proyecto Django:
 Se creara una carpeta que tendrá otra carpeta con él mismo nombre y un archivo “manage.py” que no debemos tocar, lo dejaremos solo. Este archivo se utiliza para initializer el proyecto.
 
 En la carpeta habrá 4 documentos:
+
 	* _init_.py (Necesario para que Python reconozca que existe un paquete)
 	* settings.py (Archivo principal del proyecto, el centro de configuración)
 	* urls.py (Sistema de Routing de Urls que contiene un lista de ‘paths’)
