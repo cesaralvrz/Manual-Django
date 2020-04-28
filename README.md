@@ -39,7 +39,7 @@ Para iniciar un server utilizamos:
 
 Una vez iniciado el server podremos copiar la dirección ip local en nuestro navegador de preferencia y obtendremos una pantalla cómo esta:
 
-(I  M   A   G  E  N)
+![](img/ss.png)
 
 Para desactivar el server podemos cerrar la pestaña del terminal o pulsar Ctrl + C.
 
