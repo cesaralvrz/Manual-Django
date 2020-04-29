@@ -279,3 +279,85 @@ Ahora agregaremos al navbar una imagen que nos servirá como logo, utilizando un
 ```
 
 ![](img/ss8.png)
+
+ Bases de Datos y Panel de Administrador
+La configuración estándar de bases de datos de Django es ‘SQLite’ pero se pueden configurar otras bases de datos de nuestra preferencia, como ‘MySQL’ y ‘PostgreSQL’.  
+
+Para migrar la información de la página web a la base de datos usamos los comandos:
+`$ python manage.py migrate`
+Esto cojera nuestra ‘setup’ y creara las tablas por nosotros. 
+
+Ahora para ver nuestros datos primero tenemos que crear un usuario con una contraseña, esto se hace usando el comando:
+`$ python manage.py createsuperuser`
+
+Una vez creada la cuenta nos podemos meter en ella siguiente la siguiente ruta en el navegador: 
+`http://127.0.0.1:8000/admin`
+
+![](img/ss9.png)
+
+Desde este panel podremos modificar nuestros datos, agregar e eliminar elementos.
+
+Ahora pasaremos a los ‘models’ estos se ubican en nuestra app en el archivo “models.py” y estos son simplemente clase Python que se heredan de Django models y nos permiten crear clases  que representan tablas de bases de datos.
+
+![](img/ss10.png)
+
+Ahora crearemos una clase para ‘Customer’:
+```python
+from django.db import models
+
+# Create your models here.
+
+class Customer(models.Model):
+    # Ponemos null=True para que no nos de error si esta vacío el campo.
+    name = models.CharField(max_length=200, null=True)
+    phone = models.CharField(max_length=200, null=True)
+    email = models.EmailField(max_length=200, null=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
+```
+
+Ahora pasamos nuestra ‘setup’ a nuestra bases de datos usando los siguientes comandos:
+
+El primero es para crear las tablas (la vez pasado no lo hicimos ya que estas ya fueron hechas por Django):
+
+`$ python manage.py makemigrations`
+
+La segunda es la usamos anteriormente para hacer la migración:
+
+`$ python manage.py migrate`
+
+Ahora necesitamos registras esa tabla en nuestro panel de administrador, esto se consigue yendo a ‘admin.py’ de nuestra app, donde agregaremos models de Customer y lo registraremos:
+```python
+from django.contrib import admin
+
+# Register your models here.
+
+from .models import Customer
+
+admin.site.register(Customer)
+```
+
+Ahora nos aparecerá en nuestro panel de admin:
+![](img/ss11.png)
+
+Aquí podremos agregar un nuevo Customer de manera manual.
+
+![](img/ss12.png)
+
+Ahora para que en el objeto del customer aparezca el nombre de nuestro clientes agregamos a ‘models.py’ la función siguiente:
+```python
+from django.db import models
+
+# Create your models here.
+
+class Customer(models.Model):
+    # Ponemos null=True para que no nos de error si esta vacío el campo.
+    name = models.CharField(max_length=200, null=True)
+    phone = models.CharField(max_length=200, null=True)
+    email = models.EmailField(max_length=200, null=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
+
+    #Agregamos esta función para ver el nombre
+    def __str__(self):
+        return self.name
+```
+
