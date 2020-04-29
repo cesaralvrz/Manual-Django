@@ -62,7 +62,7 @@ Después de crear un app la agregamos a “INSTALLED_APPS” en settings.py. La 
 
 ![](img/ss2.png)
 
-URLs & Paths
+## URLs & Paths
 
 ![](img/ss3.png)
 
