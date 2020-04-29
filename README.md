@@ -234,3 +234,48 @@ Cuando nuestro código empieza a tener un tamaño considerable es recomendable d
 
 ## Archivo Estáticos e Imágenes
 
+Los archivos estáticos es donde almacenaremos los estilos (css), nuestro JavaScript e imágenes de nuestro proyecto para no tener que ponerlo en el html ya que estas son prácticas no recomendadas. Para esto tenemos que crear una carpeta llamada “static” en carpeta principal del proyecto y dentro de esta creamos las carpetas de “css”, “js” e “images”.
+
+Ahora crearemos en la carpeta “css” el archivo “main.css” donde se guardarán los estilos de nuestro proyecto. 
+
+Después de crear nuestro archivo necesitamos “notificar” a Django sobre la existencia de este, esto se logra yendo a “settings.py”. Donde nos iremos hasta abajo del archivo donde dice “STATIC_URL”  y justo abajo escribiremos:
+```python
+# Esto viene por defecto:
+STATIC_URL = '/static/'
+# Escribimos lo siguiente:
+MEDIA_URLS ='/images/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+```
+
+
+Ahora necesitamos ir a nuestro “main.html” para poder conectar el archivo html con el css.  Primero tenemos que agregar al principio del archivo el load static y luego agregar el link tag usando el método de Django, se vería de la forma siguiente:
+
+```html
+<!-- Agregamos el load static al archivo -->
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>CRM</title>
+<!-- Link tag usando el método Django -->
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</head>
+```
+
+
+Ahora agregaremos al navbar una imagen que nos servirá como logo, utilizando un método similar al anterior:
+
+```html
+<!-- Agregamos el load static al archivo -->
+{% load static %}
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <img src="{% static 'images/logo.png' %}">
+```
+
+![](img/ss8.png)
