@@ -68,8 +68,8 @@ Después de crear un app la agregamos a “INSTALLED_APPS” en settings.py. La 
 
 Como mencionamos anteriormente, en nuestra app creada anteriormente en “views.py” agregaremos las siguientes secciones:
 
-	1. La primera es los imports, que uno ya viene incluido y el HttpResponse hay que agregarlo nosotros de manera manual.
-	2. La funciones de cada sección que consisten con una request y devuelven una respuesta Http con un string.
+- La primera es los imports, que uno ya viene incluido y el HttpResponse hay que agregarlo nosotros de manera manual.
+- La funciones de cada sección que consisten con una request y devuelven una respuesta Http con un string.
 
 Así se vería views.py de nuestra app:
 ```python
