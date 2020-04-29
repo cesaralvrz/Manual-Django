@@ -119,3 +119,118 @@ El urls.py principal nos enviará al urls.py de nuestra app y este activara las 
 
 ![](img/ss4.png)
 ![](img/ss5.png)
+
+Herencia y Templates
+Para empezar con los templates tenemos que crear una carpeta en nuestra app llamada ‘templates’ (es necesario usar este nombre), dentro de esta carpeta creamos otra carpeta llamada como nuestra app. En esta carpeta es donde almacenaremos nuestros templates. Aquí ya podremos crear nuestros archivos html. 
+
+Ahora crearemos un html básico con el nombre “dashboard.html”.
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>CRM</title>
+</head>
+<body>
+    <h1>Dashboard</h1>
+</body>
+</html>
+```
+
+Después de crear este archivo nos dirigiremos a views.py de nuestra aplicación y mediante el render que fue importado por Django al crear el proyecto, podremos “conectar” la función con el template.
+
+```python
+# Esto viene incluido 
+from django.shortcuts import render
+
+# Esto lo agregamos 
+from django.http import HttpResponse
+
+def home(request):
+    return render(request, 'accounts/dashboard.html')
+```
+
+Si ahora nos dirigimos otra vez al navegador podremos ver que se ha actualizado y ahora vemos el contenido del archivo html.
+
+![](img/ss6.png)
+
+Ahora haremos lo mismo con las funciones de products y customer. Asignándole un html propio a cada una.
+
+```python
+# Esto viene incluido
+from django.shortcuts import render
+
+# Esto lo agregamos 
+from django.http import HttpResponse
+
+def home(request):
+    return render(request, 'accounts/dashboard.html')
+
+def products(request):
+    return render(request, 'accounts/products.html')  
+
+def customer(request):
+    return render(request, 'accounts/customer.html')
+```
+
+Este para pequeños proyectos es redundante ya que si necesitamos actualizar un navbar tendríamos que cambiarlo en cada html, por lo tanto se crea un html base para heredar los componentes a los demás html.
+
+Para lograr esto crearemos un archivo llamado “main.html” en la carpeta templates/accounts.  Aquí introduciremos los elementos que serán compartidos por cada uno (Ej: nav, footer, etc) y dentro de este archivo dejaremos un apartado usando (“{%%}”) que es el método de introducir código Python en html y dejaremos asignados un bloque donde se podrá introducir contenido en cada template.
+
+El main.html se vería de esta manera:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>CRM</title>
+</head>
+<body>
+    <h1>Aquí irá el NavBar</h1>
+    <hr>
+
+    {% block content %}
+    <!-- Aquí es donde corresponde cada template -->
+    {% endblock %}
+
+    <hr>
+    <h5>Aquí irá el footer</h5>
+</body>
+</html> 
+```
+
+Ahora en cada “Child Element” hay que asignar como heredar del “main.html”, esto se logra extendiendo usando los template tags y luego escribiremos dónde empieza el bloque y dónde acaba este, para escribir el contenido respectivo de ese template.
+
+```html
+{% extends 'accounts/main.html' %}
+
+{% block content %}
+
+<h2> Dashboard </h2>
+
+{% endblock %}
+```
+
+![](img/ss7.png)
+
+Cuando nuestro código empieza a tener un tamaño considerable es recomendable dividir cada sección  en diferentes archivos html (Ej: uno para el navbar y otro para el footer). Luego solo necesitamos incluirlo donde dejamos por ejemplo en el main.html.
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>CRM</title>
+</head>
+<body>
+    {% include 'accounts/navbar.html' %}
+
+    {% block content %}
+    <!-- Aquí es donde introduciremos el contenido en cada 		template -->
+    {% endblock %}
+
+    {% include 'accounts/footer.html' %}
+</body>
+</html> 
+```
+
+
+## Archivo Estáticos e Imágenes
+
