@@ -48,5 +48,13 @@ Los proyectos de Django forman parte de ‘Apps’ que se podrían ver como dife
 
 Para crear una app usamos el comando:
 `$ python manage.py startapp 'nombre'`
+Al crear una app esta también vendrá con diferentes carpetas, las principales donde trabajaremos son:
 
-Al crear una app esta también vendrá con diferentes carpetas:
+- admin.py (Admin panel of the website)
+- models.py (Donde creamos nuestra bases de datos)
+-views.py (Donde se ubican las clases que activan los templates del proyecto)
+
+Después de crear un app la agregamos a “INSTALLED_APPS” en settings.py.
+
+![](img/ss2.png)
+
