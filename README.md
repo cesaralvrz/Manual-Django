@@ -62,3 +62,59 @@ Después de crear un app la agregamos a “INSTALLED_APPS” en settings.py. La 
 
 ![](img/ss2.png)
 
+URLs & Paths
+
+![](img/ss3.png)
+
+Como mencionamos anteriormente, en nuestra app creada anteriormente en “views.py” agregaremos las siguientes secciones:
+	1. La primera es los imports, que uno ya viene incluido y el HttpResponse hay que agregarlo nosotros de manera manual.
+	2. La funciones de cada sección que consisten con una request y devuelven una respuesta Http con un string.
+
+Así se vería views.py de nuestra app:
+```python
+# Esto viene incluido
+from django.shortcuts import render
+
+# Esto lo agregamos 
+from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("Home Page")
+
+def products(request):
+    return HttpResponse("Products")  
+
+def customer(request):
+    return HttpResponse("Customer")     
+```
+	
+
+Ahora para la app queremos crear un nuevo archivo llamado “urls.py”, en el cual agregaremos el import path, el import views y el Urlpatterns que es donde marcaremos la dirección url de cada path y la función de views respectiva. (El caso de Home no se pone nada en el path ya que es path por defecto).
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home),
+    path('products/', views.products),
+    path('customer/', views.customer),
+]
+```
+
+Ahora en el “urls.py” principal deberemos agregar en el import al lado de path con una coma “include”. Luego crearemos un nuevo path debajo de admin el cual nos enviara al urls.py de nuestra app, en esta caso la app se llama “accounts”.
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('accounts.urls')),
+]
+```
+
+El urls.py principal nos enviará al urls.py de nuestra app y este activara las funciones en el views.py. Ahora si corremos nuestro server tendrá que aparecer el string que introducimos anteriormente.
+
+![](img/ss4.png)
+![](img/ss5.png)
