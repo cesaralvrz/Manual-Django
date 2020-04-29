@@ -54,7 +54,7 @@ Al crear una app esta también vendrá con diferentes carpetas, las principales 
 - models.py (Donde creamos nuestra bases de datos)
 -views.py (Donde se ubican las clases que activan los templates del proyecto)
 
-Después de crear un app la agregamos a “INSTALLED_APPS” en settings.py.
+Después de crear un app la agregamos a “INSTALLED_APPS” en settings.py. La introduciremos con entre comillas el nombre de la App y poseriormente con una coma.
 
 ![](img/ss2.png)
 
