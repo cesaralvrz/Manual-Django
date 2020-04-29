@@ -20,6 +20,10 @@ Instalamos Django en el entorno virtual:
 Luego creamos un Proyecto Django:
 `$ django-admin startproject 'nombre'`
 
+Nota: Es importante recordar que si encontramos el problema de "unresolved import" lo resolveremos de esta manera:
+(Shift + cmd + p) para abri el Comand Palette de VSC y ahí seleccionamos Python. En el source code copiamos esto con la dirección en donde se encuentre nuestro proyecto (con un pwd en el Terminal se podrá saber):
+
+`”python.pythonPath”: “/path/to/your/venv/bin/python”,`
 
 ## Estructura Inicial
 Se creara una carpeta que tendrá otra carpeta con él mismo nombre y un archivo “manage.py” que no debemos tocar, lo dejaremos solo. Este archivo se utiliza para initializer el proyecto.
