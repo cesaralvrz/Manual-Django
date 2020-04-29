@@ -223,7 +223,7 @@ Cuando nuestro código empieza a tener un tamaño considerable es recomendable d
     {% include 'accounts/navbar.html' %}
 
     {% block content %}
-    <!-- Aquí es donde introduciremos el contenido en cada 		template -->
+    <!-- Aquí es donde introduciremos el contenido en cada template -->
     {% endblock %}
 
     {% include 'accounts/footer.html' %}
