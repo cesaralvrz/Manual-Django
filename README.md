@@ -8,6 +8,7 @@ Necesitamos tener instalado Python y Pip para poder seguir con este proceso.
 
 Nos ubicamos dónde queremos crear el entorno virtual en el Terminal:
 Para instalar el entorno virtual de Python:
+
 `$ pip install virtualenv`
 
 Para crear un entorno virtual:
