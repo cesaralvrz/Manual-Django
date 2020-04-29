@@ -1,7 +1,7 @@
 # Manual-Django
-Django es un framework de desarrollo web de código abierto, escrito en Python.
 
 ![](img/miniatura.jpg)
+Django es un framework de desarrollo web de código abierto, escrito en Python.
 
 ## Instalación 
 Necesitamos tener instalado Python y Pip para poder seguir con este proceso.
