@@ -452,7 +452,6 @@ class Order(models.Model):
 
 
 Más información sobre Queries en la documentación de Django:
-
 https://docs.djangoproject.com/en/3.0/ref/models/querysets/
 
 Para correr nuestros Queries necesitamos introducir el comando:
@@ -460,10 +459,10 @@ Para correr nuestros Queries necesitamos introducir el comando:
 `$ python manage.py shell`
 
 Lo que esto causa es que nos crea un shell interactivo donde podemos trabajos con nuestros datos. 
-
 Para importar todos los modelos de nuestra app usamos el comando siguiente:
 
 `$ from accounts.models import *`
+
 
 Queries:
 ```python
