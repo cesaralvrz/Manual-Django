@@ -499,3 +499,63 @@ greatestToLeast = Product.objects.all().order_by('-id')
 productsFiltered = Product.objects.filter(tags__name="Sports")
 ```
 
+
+## Rendering Data a Nuestras Plantillas
+Hay dos tipos de template tags que podemos usar, el primero son para incluir bucles y similares en nuestras plantillas:  `{% %}`
+
+Los segundos son para pasar información de nuestro proyecto: `{{ }}`
+
+Primero necesitamos is a nuestro archivo “views.py” de nuestra aplicación y importamos los models, luego creamos el query en nuestra función y finalmente agregamos un diccionario en el render con los valores que queremos pasar:
+```python
+from django.shortcuts import render
+from django.http import HttpResponse
+# Importamos los models
+from .models import *
+
+def home(request):
+    return render(request, 'accounts/dashboard.html')
+
+def products(request):
+    products = Product.objects.all()
+    return render(request, 'accounts/products.html', {'products': products})  
+
+def customer(request):
+    return render(request, 'accounts/customer.html')
+```
+
+
+Ahora en el archivo html agregaremos un bucle for para pasar por cada nombre de cada producto e insertarlo las filas de una tabla:
+```html
+{% extends 'accounts/main.html' %}
+
+{% block content %}
+<br>
+
+<div class="row">
+    <div class="col-md">
+        <div class="card card-body">
+            <h5>Products</h5>
+        </div>
+        <div class="card card-body">
+            <table class="table">
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                </tr>
+
+                {% for i in products %}
+                    <tr>
+                        <td>{{i.name}}</td>
+                    </tr>
+                {% endfor %}
+                
+            </table>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock %}
+```
+
