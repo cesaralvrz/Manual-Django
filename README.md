@@ -369,3 +369,75 @@ class Customer(models.Model):
         return self.name
 ```
 
+
+## Relación Entre Bases de Datos
+Relación “One to many”, en este ejemplo one sería el ‘customer’ y many sería ‘orders’:
+![](img/ss13.png)
+
+Relación “Many to many”, por ejemplo una tienda que use ’tags’:
+![](img/ss14.png)
+![](img/ss15.png)
+
+Para implementar estas relaciones en Django usamos ‘models.ForeignKey’ más la clase que queremos que sea el ‘Parent’, así se vería el ‘models.py’ de nuestra aplicación después de agregar la relación a ‘Order’:
+```python
+ from django.db import models
+
+class Customer(models.Model):
+    name = models.CharField(max_length=200, null=True)
+    phone = models.CharField(max_length=200, null=True)
+    email = models.EmailField(max_length=200, null=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+class Product(models.Model):
+    CATEGORY = (
+            ('Indoor', 'Indoor'),
+            ('Out door', 'Out door'),
+        )
+    name = models.CharField(max_length=200, null=True)
+    price = models.FloatField(null=True)
+    category = models.CharField(max_length=200, null=True, choices=CATEGORY)
+    description = models.CharField(max_length=200, null=True)
+    date_created = models.DateTimeField(auto_now_add=True, null=True)
+
+class Order(models.Model):
+    STATUS = (
+            ('Pending', 'Pending'),
+            ('Out for Delivery', 'Out for Delivery'),
+            ('Delivered', 'Delivered'),
+        )
+    date_created = models.DateTimeField(auto_now_add=True, null=True) 
+    status = models.CharField(max_length=200, null=True, choices=STATUS)
+    #Agregamos esta para tener un relación:
+    customer = models.ForeignKey(Customer, null=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+
+```
+
+![](img/ss16.png)
+
+Para crear una relación Many To Many usamos ‘models.ManyToManyField()’, en este caso crearemos un tag para la ‘order’:
+```python
+class Tag(models.Model):
+    name = models.CharField(max_length=200, null=True)
+
+    def __str__(self):
+        return self.name
+
+class Order(models.Model):
+    STATUS = (
+            ('Pending', 'Pending'),
+            ('Out for Delivery', 'Out for Delivery'),
+            ('Delivered', 'Delivered'),
+        )
+    date_created = models.DateTimeField(auto_now_add=True, null=True) 
+    status = models.CharField(max_length=200, null=True, choices=STATUS)
+    customer = models.ForeignKey(Customer, null=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    # Relación Many to Many
+    tags = models.ManyToManyField(Tag)
+```
+
+
