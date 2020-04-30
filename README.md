@@ -12,15 +12,19 @@ Para instalar el entorno virtual de Python:
 `$ pip install virtualenv`
 
 Para crear un entorno virtual:
+
 `$ virtualenv 'nombre'`
 
 Para activar el entorno virtual:
+
 `$ source 'nombre'/bin/activate`
 
 Instalamos Django en el entorno virtual:
+
 `$ python -m pip install Django`
 
 Luego creamos un Proyecto Django:
+
 `$ django-admin startproject 'nombre'`
 
 Nota: Es importante recordar que si encontramos el problema de "unresolved import" lo resolveremos de esta manera:
@@ -124,7 +128,7 @@ El urls.py principal nos enviará al urls.py de nuestra app y este activara las 
 ![](img/ss4.png)
 ![](img/ss5.png)
 
-Herencia y Templates
+## Herencia y Templates
 Para empezar con los templates tenemos que crear una carpeta en nuestra app llamada ‘templates’ (es necesario usar este nombre), dentro de esta carpeta creamos otra carpeta llamada como nuestra app. En esta carpeta es donde almacenaremos nuestros templates. Aquí ya podremos crear nuestros archivos html. 
 
 Ahora crearemos un html básico con el nombre “dashboard.html”.
@@ -284,7 +288,7 @@ Ahora agregaremos al navbar una imagen que nos servirá como logo, utilizando un
 
 ![](img/ss8.png)
 
- Bases de Datos y Panel de Administrador
+## Bases de Datos y Panel de Administrador
 La configuración estándar de bases de datos de Django es ‘SQLite’ pero se pueden configurar otras bases de datos de nuestra preferencia, como ‘MySQL’ y ‘PostgreSQL’.  
 
 Para migrar la información de la página web a la base de datos usamos los comandos:
