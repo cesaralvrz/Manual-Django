@@ -559,3 +559,20 @@ Ahora en el archivo html agregaremos un bucle for para pasar por cada nombre de 
 {% endblock %}
 ```
 
+
+Para los diccionarios se pude usar uno general y pasar solo ese parámetro en el return, por ejemplo:
+```python
+def home(request):
+    orders = Order.objects.all()
+    customers = Customer.objects.all()
+    total_customers = customers.count()
+    total_orders = orders.count()
+    delivered = orders.filter(status='Delivered').count()
+    pending = orders.filter(status='Pending').count()
+
+    context = {'orders': orders, 'customers': customers, 
+    'total_orders': total_orders, 'delivered': delivered, 'pending': pending}
+
+    return render(request, 'accounts/dashboard.html', context)
+```
+
