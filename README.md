@@ -448,10 +448,11 @@ class Order(models.Model):
 ## Queries de Modelos de Bases de Datos
 
 
-![](img/ss17.png)
+![](img/ss18.png)
 
 
 Más información sobre Queries en la documentación de Django:
+
 https://docs.djangoproject.com/en/3.0/ref/models/querysets/
 
 Para correr nuestros Queries necesitamos introducir el comando:
