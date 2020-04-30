@@ -371,11 +371,15 @@ class Customer(models.Model):
 
 
 ## Relación Entre Bases de Datos
+
 Relación “One to many”, en este ejemplo one sería el ‘customer’ y many sería ‘orders’:
+
 ![](img/ss13.png)
 
 Relación “Many to many”, por ejemplo una tienda que use ’tags’:
+
 ![](img/ss14.png)
+
 ![](img/ss15.png)
 
 Para implementar estas relaciones en Django usamos ‘models.ForeignKey’ más la clase que queremos que sea el ‘Parent’, así se vería el ‘models.py’ de nuestra aplicación después de agregar la relación a ‘Order’:
