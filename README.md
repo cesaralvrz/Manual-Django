@@ -665,4 +665,5 @@ Ahora iremos a la plantilla ‘customer.html’ que fue a la que le pasamos el d
 ```
 
 Una vez actualizada la página así se vería nuestra página web con todos los parámetros:
+
 ![](img/ss19.png)
