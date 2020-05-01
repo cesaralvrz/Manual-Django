@@ -711,3 +711,4 @@ Aplicamos el mismo método al Navbar, para poder navegar por nuestro sitio web:
     </div>
 ```
 
+![](img/ss20.png)
