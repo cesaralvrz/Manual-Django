@@ -667,3 +667,47 @@ Ahora iremos a la plantilla ‘customer.html’ que fue a la que le pasamos el d
 Una vez actualizada la página así se vería nuestra página web con todos los parámetros:
 
 ![](img/ss19.png)
+
+
+### URLs Dinámicos 
+
+Para tener un Navbar dinámico u otras aplicaciones similares lo primero que tenemos que hacer es ir a nuestro ‘urls.py’ de nuestra app y asignar un nombre a cada urls pattern:
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    # Asignamos el nombre a cada path
+    path('', views.home, name="home"),
+    path('products/', views.products, name="products"),
+    path('customer/<str:pk_test>/', views.customer, name="customer"),
+]
+```
+
+Ahora podemos agregar estas urls dinámicas en nuestras plantillas, primero crearemos un link para nuestros usuarios, el ‘name’ que introducimos en ‘urls.py’ y luego el id del customer que conseguimos con el bucle for:
+```html
+{% for customer in customers %}
+<tr>
+<!-- Url dinámica para cada usuario -->
+ <td><a href="{% url 'customer' customer.id %}">View</a></td>
+  <td>{{ customer.name}}</td>
+  <td>{{ customer.phone}}</td>
+ </tr>
+ {% endfor %} 
+```
+
+Aplicamos el mismo método al Navbar, para poder navegar por nuestro sitio web:
+```html
+<div class="collapse navbar-collapse" id="navbarsExample04">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <!-- Url dinámicas en el NavBar -->
+          <a class="nav-link" href="{% url 'home' %}">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'products' %}">Products</a>
+        </li>
+      </ul>
+    </div>
+```
+
