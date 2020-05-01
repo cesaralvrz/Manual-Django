@@ -576,3 +576,93 @@ def home(request):
     return render(request, 'accounts/dashboard.html', context)
 ```
 
+
+## Routing Dinámico de URLS y Plantillas
+Podemos crear URLs dinámicos en nuestro proyecto, en este ejemplo crearemos el path para cada ‘customer’, el cual será identificado por su ‘id’ respectiva, así se vería ‘urls.py’ de nuestro proyecto:
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home),
+    path('products/', views.products),
+    # Agregamos un string que contendrá el id
+    path('customer/<str:pk_test>/', views.customer),
+]
+```
+
+
+Ahora en “views.py” pasaremos la primary key que introducimos en ‘urls.py’ para poder asignarlos a una variable y pasar esta a nuestra plantilla:
+```python
+# Agregamos la primary key del urls.py
+def customer(request, pk_test):
+    # Asignamos a la variable customer el id que correspoda a la pk
+    customer = Customer.objects.get(id=pk_test)
+    # Creamos un diccionario para customer
+    context = {'customer': customer}
+    # Pasamos el diccionario en el return
+    return render(request, 'accounts/customer.html', context)
+```
+
+
+Ahora agregamos los pedidos del ‘customer’ que creamos anteriormente con un query:
+```python
+def customer(request, pk_test):
+    customer = Customer.objects.get(id=pk_test)
+    # Asignamos a la variable orders los pedidos del customer que creamos arriba
+    orders = customer.order_set.all()
+    # Agregamos los pedidos tambien al diccionario
+    context = {'customer': customer, "orders": orders}
+    # Pasamos el diccionario en el return
+    return render(request, 'accounts/customer.html', context)
+```
+
+
+Ahora iremos a la plantilla ‘customer.html’ que fue a la que le pasamos el diccionario y en esta asignaremos lo valores correspondientes:
+```html
+
+    <div class="col-md">
+        <div class="card card-body">
+            <h5>Contact Information</h5>
+            <hr>
+            <!-- Agregamos información del usuario -->
+            <p>Email: {{customer.email}}</p>
+            <p>Phone: {{customer.phone}}</p>
+        </div>
+    </div>
+
+
+<div class="row">
+    <div class="col-md">
+        <div class="card card-body">
+            <table class="table table-sm">
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Date Orderd</th>
+                    <th>Status</th>
+                    <th>Update</th>
+                    <th>Remove</th>
+                </tr>
+
+                <!-- for lop para asignar los valores de los pedidos de cada usuario -->
+                {% for order in orders %}
+                <tr>
+                    <td> {{order.product}} </td>
+                    <td> {{order.product.category}} </td>
+                    <td> {{order.date_created}} </td>
+                    <td> {{order.status}} </td>
+                    <td><a class="btn btn-sm btn-info" href="">Update</a></td>
+                    <td><a class="btn btn-sm btn-danger" href="">Remove</a></td>
+                </tr>
+                {% endfor %}
+
+            </table>
+        </div>
+    </div>
+</div>
+
+```
+
+Una vez actualizada la página así se vería nuestra página web con todos los parámetros:
+![](img/ss19.png)
