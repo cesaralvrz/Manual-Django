@@ -712,3 +712,187 @@ Aplicamos el mismo método al Navbar, para poder navegar por nuestro sitio web:
 ```
 
 ![](img/ss20.png)
+
+
+
+## Funcionalidades: Crear, Actualizar y Eliminar (CRUD)
+Primero creamos un nuevo archivo html con el nombre ‘order_form.html’ que extiende de ‘main.html’ que contendrá nuestro formulario:
+```html
+{% extends 'accounts/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+            <form action="" method="POST">    
+                <input type="submit" name="Submit">
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+```
+
+
+Luego crearemos un nuevo path en ‘urls.py’ de nuestra app:
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name="home"),
+    path('products/', views.products, name="products"),
+    path('customer/<str:pk_test>/', views.customer, name="customer"),
+    # Nuevo Path
+    path('create_order/', views.createOrder, name="create_order"),
+]
+```
+
+
+Después en nuestro archivo ‘views.py’ agregamos una nueva función:
+```python
+def createOrder(request):
+    context = {}
+    return render(request, 'accounts/order_form.html', context)
+```
+
+
+Ahora para crear el formulario necesitamos crear un nuevo archivo llamado ‘forms.py’ en nuestra app, y escribimos lo siguiente:
+```python
+from django.forms import ModelForm
+from .models import *
+
+class OrderForm(ModelForm):
+    class Meta:
+        # Nombre del model
+        model = Order
+        # Que importe todos campos de la clase 'Order'
+        fields = '__all__'
+```
+
+
+Después volvemos a nuestro archivo ‘views.py’ para import nuestro ModelFrom recién creado:
+```python
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import *
+# Importamos la form
+from .forms import OrderForm
+.
+.
+.
+def createOrder(request):
+    # Creamos la variable form y le asignamos la 'OrderForm()'
+    form = OrderForm()
+    # Agregamos la variable a nuestro diccionario
+    context = {'form': form}
+    return render(request, 'accounts/order_form.html', context)
+```
+
+
+Ahora volvemos al archivo html para agregar la form:
+```html
+{% extends 'accounts/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+
+            <form action="" method="POST"> 
+                <!-- Manera segura de mandar la información -->
+                {% csrf_token %}
+                <!-- Nuestra form mandada desde Views -->
+                {{ form }}
+                <input type="submit" name="Submit">
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+```
+
+
+Para finalizar en ‘views.py’ añadimos a la función ‘createOrder’ la validación del formulario para poder guardarlo y nos devuelve al dashboard al finalizar (necesitamos importar el redirect shortcut):
+```python
+# Importamos el redirect shortcut
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .models import *
+# Importamos la form
+from .forms import OrderForm
+.
+.
+.
+def createOrder(request):
+    form = OrderForm()
+
+    # Es un 'POST' o un 'GET' pero es nuestra from hemos puesto POST
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        # Si nuestro formulario es válida
+        if form.is_valid():
+            form.save()
+            # Nos devuelve al dashboard
+            return redirect('/')
+
+    context = {'form': form}
+    return render(request, 'accounts/order_form.html', context) 
+```
+
+### Actualizar (Update)
+
+Para poder crear un botón que actualice los pedidos de la página podemos reutilizar la plantilla formulario de html que creamos anteriormente. Después tenemos que crear un nuevo path en ‘urls.py’ de nuestra app:
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name="home"),
+    path('products/', views.products, name="products"),
+    path('customer/<str:pk_test>/', views.customer, name="customer"),
+    path('create_order/', views.createOrder, name="create_order"),
+    # Nuevo Path
+    path('update_order/<str:pk>/', views.updateOrder, name="update_order"),
+]
+```
+
+
+Luego crearemos una nueva función en nuestro ‘views.py’ para poder actualizar el pedido:
+```python
+def updateOrder(request, pk):
+    # Usamos un Query para seleccionar nuestro pedido
+    order = Order.objects.get(id=pk)
+    # Item instance que vamos a rellenar en nuestro formulario
+    form = OrderForm(instance=order)
+
+    if request.method == 'POST':
+        # Para no crear un nuevo y que se cambie el selccionado, usamos instance
+        form = OrderForm(request.POST, instance=order)
+        # Si nuestro formulario es válida
+        if form.is_valid():
+            form.save()
+            # Nos devuelve al dashboard
+            return redirect('/')
+    context = {'form': form}
+    return render(request, 'accounts/order_form.html', context)
+```
+
+
+Finalmente le asignamos el path al botón de la plantilla ‘dashboard.html’:
+```html
+ <!-- Link del botón de la página 'update_order' -->
+<td><a class="btn btn-sm btn-info" href="{%url 'update_order' order.id%}">Update</a></td>
+```
+
+
+![](img/ss21.png)
+
+### Borrar (Delete)
+
