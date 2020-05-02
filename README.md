@@ -846,6 +846,10 @@ def createOrder(request):
     return render(request, 'accounts/order_form.html', context) 
 ```
 
+
+![](img/ss21.png)
+
+
 ### Actualizar (Update)
 
 Para poder crear un botón que actualice los pedidos de la página podemos reutilizar la plantilla formulario de html que creamos anteriormente. Después tenemos que crear un nuevo path en ‘urls.py’ de nuestra app:
@@ -892,7 +896,8 @@ Finalmente le asignamos el path al botón de la plantilla ‘dashboard.html’:
 ```
 
 
-![](img/ss21.png)
+![](img/ss22.png)
+
 
 ### Borrar (Delete)
 
