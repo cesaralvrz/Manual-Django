@@ -890,12 +890,14 @@ def updateOrder(request, pk):
 
 
 Finalmente le asignamos el path al botón de la plantilla ‘dashboard.html’:
+
 ```html
  <!-- Link del botón de la página 'update_order' -->
 <td><a class="btn btn-sm btn-info" href="{%url 'update_order' order.id%}">Update</a></td>
 ```
 
 Así quedaría la página de 'update':
+
 ![](img/ss22.png)
 
 
