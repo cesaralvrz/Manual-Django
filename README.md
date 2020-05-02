@@ -847,6 +847,7 @@ def createOrder(request):
 ```
 
 Así quedaría la página de 'create':
+
 ![](img/ss21.png)
 
 
