@@ -846,7 +846,7 @@ def createOrder(request):
     return render(request, 'accounts/order_form.html', context) 
 ```
 
-
+Así quedaría la página de 'create':
 ![](img/ss21.png)
 
 
@@ -895,7 +895,7 @@ Finalmente le asignamos el path al botón de la plantilla ‘dashboard.html’:
 <td><a class="btn btn-sm btn-info" href="{%url 'update_order' order.id%}">Update</a></td>
 ```
 
-
+Así quedaría la página de 'update':
 ![](img/ss22.png)
 
 
