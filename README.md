@@ -986,6 +986,7 @@ En nuestro ‘dashboard.html’ le agregamos al botón a nuestro html que creamo
 ```html
 <!-- Link del botón de la página 'update_order' -->
                     <td><a class="btn btn-sm btn-danger" href="{%url 'delete_order' order.id%}">Delete</a></td>
+```
 
 
 ![](img/ss23.png)
