@@ -904,3 +904,88 @@ Así quedaría la página de 'update':
 
 ### Borrar (Delete)
 
+Finalmente agregaremos la opción de borrar un pedido, primero agregaremos el path a nuestro ‘urls.py’:
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name="home"),
+    path('products/', views.products, name="products"),
+    path('customer/<str:pk_test>/', views.customer, name="customer"),
+    path('create_order/', views.createOrder, name="create_order"),
+    path('update_order/<str:pk>/', views.updateOrder, name="update_order"),
+    # Nuevo Path
+    path('delete_order/<str:pk>/', views.deleteOrder, name="delete_order"),
+]
+```
+
+
+En ‘models.py’ agregamos la función ‘__str__’ para ver el nombre del producto al querer eliminarlo:
+```python
+class Order(models.Model):
+    STATUS = (
+            ('Pending', 'Pending'),
+            ('Out for Delivery', 'Out for Delivery'),
+            ('Delivered', 'Delivered'),
+        )
+    date_created = models.DateTimeField(auto_now_add=True, null=True) 
+    status = models.CharField(max_length=200, null=True, choices=STATUS)
+    customer = models.ForeignKey(Customer, null=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+
+    # Para poder visualizar el nombre del pedido
+    def __str__(self):
+        return self.product.name
+```
+
+
+Creamos la función de ‘deleteOrder’ en views.py:
+```python
+def deleteOrder(request, pk):
+    order = Order.objects.get(id=pk)
+    if request.method == "POST":
+        order.delete()
+        return redirect('/')
+
+    context = {'order': order} 
+    return render(request, 'accounts/delete.html', context)
+```
+
+
+Ahora finalmente creamos el archivo ‘delete.html’:
+```html
+{%  extends 'accounts/main.html' %}
+{% load static %}
+{% block content %}
+
+<br>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+
+
+            <p>Are you sure you want to delete "{{order}}"?</p>
+
+            <form action="{% url 'delete_order' order.id  %}" method="POST">
+                
+                {% csrf_token %}
+                <a class="btn btn-danger" href="{% url 'home' %}">Cancel</a>
+
+                <input class="btn btn-primary" type="submit" name="Confirm">
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+```
+
+
+En nuestro ‘dashboard.html’ le agregamos al botón a nuestro html que creamos anteriormente:
+```html
+<!-- Link del botón de la página 'update_order' -->
+                    <td><a class="btn btn-sm btn-danger" href="{%url 'delete_order' order.id%}">Delete</a></td>
+
+
+![](img/ss23.png)
