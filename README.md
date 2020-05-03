@@ -992,3 +992,66 @@ En nuestro ‘dashboard.html’ le agregamos al botón a nuestro html que creamo
 Así se vería la página web:
 
 ![](img/ss23.png)
+
+
+Inline Formsets
+Primero tenemos que importar el ‘inlineformset’ a nuestro archivo:
+```python
+from django.forms import inlineformset_factory
+```
+
+
+Ahora creamos la variable en nuestra función en nuestro archivo ‘views.py’:
+```python
+def createOrder(request, pk):
+    # Creamos el Order Form Set (extra = número de línes más)
+    OrderFormSet = inlineformset_factory(Customer, Order, fields=('product', 'status'), extra=6)
+    customer = Customer.objects.get(id=pk)
+    # Asignamos a la variable formset el valor de OrderFormSet y que este indicado el customer
+    # El Query set es para que no se incluyan los pedidos que ya existen
+    formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
+
+    if request.method == 'POST':
+        formset = OrderFormSet(request.POST, instance=customer)
+        if formset.is_valid():
+            formset .save()
+            return redirect('/')
+
+    context = {'formset': formset}
+    return render(request, 'accounts/order_form.html', context)
+```
+
+
+Ahora lo añadimos a nuestro archivo html:
+```html
+{% extends 'accounts/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card card-body">
+
+            <form action="" method="POST"> 
+                {% csrf_token %}
+                <!-- Necesitamos incluir esto para que no nos de un error -->
+                {{ formset.management_form }}
+                {% for form in formset %}
+                    {{ form }}
+                    <hr>
+                {% endfor %}
+                <input class="btn btn-primary" type="submit" name="Submit">
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+```
+
+
+Así se vería el inline formset:
+
+
+![](img/ss24.png)
