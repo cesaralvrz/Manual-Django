@@ -989,4 +989,6 @@ En nuestro ‘dashboard.html’ le agregamos al botón a nuestro html que creamo
 ```
 
 
+Así se vería la página web:
+
 ![](img/ss23.png)
