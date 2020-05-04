@@ -1055,3 +1055,117 @@ Así se vería el inline formset:
 
 
 ![](img/ss24.png)
+
+
+Filtrar Datos de un Formulario
+
+Para poder filtrar información de nuestro formulario tenemos que instalar el paquete ‘django-filter’ en nuestro terminal:
+
+
+`$ pip install django-filter`
+
+
+Ahora iremos a ‘settings.py’ de nuestro proyecto e iremos al apartado ‘INSTALLED_APPS’ y añadiremos nuestra nueva aplicación:
+```python
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'accounts',
+    # Añadimos la aplicación
+    'django_filters',
+]
+```
+
+
+Después en nuestro app crearemos un archivo llamado ‘filters.py’,  esta utilizará una estructura similar a la que usamos en el archivo ‘forms.py’. En este archivo importaremos el ‘django_filters’ al igual que todos nuestros modelos y después crearemos la clase para el filtro:
+
+```python
+import django_filters
+
+from .models import *
+
+class OrderFilter(django_filters.FilterSet):
+    class Meta:
+        # Asignamos la variable model al pedido
+        model = Order
+        fields = '__all__'
+```
+
+
+Luego importamos nuestra clase al archivo ‘views.py’, donde importaremos la clase y la añadiremos a la función ‘Customer’:
+
+```python
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.forms import inlineformset_factory
+from .models import *
+from .forms import OrderForm
+# Importamos la clase de nuestro archivo 'filters.py'
+from .filters import OrderFilter
+.
+.
+.
+def customer(request, pk_test):
+    customer = Customer.objects.get(id=pk_test)
+    orders = customer.order_set.all()
+    order_count = orders.count()
+
+    # Asignamos a la variable 'myFilter' la clase que importamos
+    # Los datos de 'orders' serán filtrados
+    myFilter = OrderFilter(request.GET, queryset=orders)
+    # Recreamos la variable 'orders' para los que cumplen los parámetros
+    orders = myFilter.qs
+
+    # Agregamos la variable al diccionario
+    context = {'customer': customer, "orders": orders, "order_count": order_count, 'myFilter': myFilter}
+    return render(request, 'accounts/customer.html', context)
+```
+
+
+
+Ahora agregamos el filtro en nuestro archivo html:
+
+```html
+<div class="row">
+    <div class="col">
+        <div class="card card-body">
+            <form method="get">
+                {{ myFilter.form }}
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+    </div> 
+</div>
+```
+
+
+El filtro ya esta creado pero ahora tocaría agregar un mejor método para agregar la fecha y quitar el usuario del filtro. Esto lo haremos yendo de vuelta a nuestro archivo “filters.py”. 
+
+```python
+import django_filters
+# Importamos el filtro de fecha
+from django_filters import DateFilter
+
+from .models import *
+
+class OrderFilter(django_filters.FilterSet):
+    # La variable se importa de 'DateDilter', en el field
+    # asignamos la variable del modelo que queremos usar
+    # y la visualización usamos "Greaten than equal to"
+    start_date = DateFilter(field_name="date_created", lookup_expr='gte')
+    # Visualización usamos "Less than equal to"
+    end_date = DateFilter(field_name="date_created", lookup_expr='lte')
+    
+    class Meta:
+        model = Order
+        fields = '__all__'
+        # Excluimos la variables 'customer' (porque no la queremos)
+        # y 'date_created' porque vamos a usar otro formato
+        exclude = ['customer', 'date_created']
+```
+
+
