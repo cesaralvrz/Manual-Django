@@ -1057,7 +1057,7 @@ Así se vería el inline formset:
 ![](img/ss24.png)
 
 
-Filtrar Datos de un Formulario
+## Filtrar Datos de un Formulario
 
 Para poder filtrar información de nuestro formulario tenemos que instalar el paquete ‘django-filter’ en nuestro terminal:
 
