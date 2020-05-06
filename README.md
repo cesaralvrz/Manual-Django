@@ -1169,3 +1169,204 @@ class OrderFilter(django_filters.FilterSet):
 ```
 
 
+
+## Registro de Usuarios
+Primero creamos las funciones de Registro e Inicio en nuestro archivo “views.py”:
+
+```python
+# Creamos la funciones de Registro e Inicio
+def registerPage(request):
+    context = {}
+    return render(request, 'accounts/register.html', context)
+
+def loginPage(request):
+    context = {}
+    return render(request, 'accounts/login.html', context)
+```
+
+
+Después creamos los urls paths en el archivo “urls.py”:
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    # Creamos los path
+    path('register/', views.registerPage, name="register"),
+    path('login/', views.loginPage, name="login"),
+
+    path('', views.home, name="home"),
+    path('products/', views.products, name="products"),
+    path('customer/<str:pk_test>/', views.customer, name="customer"),
+    path('create_order/<str:pk>/', views.createOrder, name="create_order"),
+    path('update_order/<str:pk>/', views.updateOrder, name="update_order"),
+    path('delete_order/<str:pk>/', views.deleteOrder, name="delete_order"),
+]
+```
+
+
+Luego creamos las dos plantillas html: ‘login.html’ y ‘register.html’. 
+Ahora podemos importar la creación de usuario en nuestro archivo “views.py” que nos proporciona Django para facilitar este proceso:
+
+```python
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.forms import inlineformset_factory
+# Importamos la creación de usuario de Django
+from django.contrib.auth.forms import UserCreationForm 
+
+from .models import *
+from .forms import OrderForm
+from .filters import OrderFilter
+
+
+def registerPage(request):
+    # Creamos nuestro formulario con el 'UserCreationForm' que importamos
+    form = UserCreationForm()
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            
+    # Lo pasamos a nuestro diccionario
+    context = {'form': form }
+    return render(request, 'accounts/register.html', context)
+```
+
+
+Ahora si creamos un formulario en nuestro archivo “register.html”:
+
+```html
+<h3> Register </h3>
+
+<form method="POST" action="">
+    {% csrf_token %} 
+    <!-- form de la función 'registerPage' -->
+    <!-- el '.as_p' es para el formato este línea por línea-->
+    {{form.as_p}}
+
+    <input type="submit" name="Create User">
+</form>
+```
+
+
+![](img/ss25.png)
+
+
+Luego en nuestro archivo ‘forms.py’ creamos la clase para crear un usuario:
+
+```python
+from django.forms import ModelForm
+# Importamos la creación de usuario de Django
+from django.contrib.auth.forms import UserCreationForm 
+# Importamos el User Model (Que vemos en el admin panel)
+from django.contrib.auth.models import User
+# Importamos los formularios de Django
+from django import forms
+
+from .models import *
+
+class OrderForm(ModelForm):
+    class Meta:
+        model = Order
+        fields = '__all__'  
+
+# Creamos la clase
+class CreateUserForm(UserCreationForm):
+    class Meta:
+        # Asignamos a la variable model el import que hicimos anteriormente
+        model = User
+        # Vamos a asignar los campos que desiamos del model en una lista
+        fields = ['username', 'email', 'password1', 'password2']
+```
+
+
+Ahora pasamos esta clase a nuestro archivo ‘views.py’, con lo que ahora podremos ver que al crear un usuario, este necesita introducir su email:
+
+```python
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.forms import inlineformset_factory
+from django.contrib.auth.forms import UserCreationForm 
+
+from .models import *
+# Importamos el formulario de usuario
+from .forms import OrderForm, CreateUserForm
+from .filters import OrderFilter
+
+
+def registerPage(request):
+    # Cambiamos UserCreationForm() por CreateUserForm()
+    form = CreateUserForm()
+
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Al guardarse el registro lo mandamos a la página de login
+            return redirect('login')
+
+    context = {'form': form }
+    return render(request, 'accounts/register.html', context)
+```
+
+
+Ahora para quitar todo el texto innecesario de nuestra página de registro, simplemente creamos un bucle for donde va pasando el label y valor de cada elemento del formulario:
+
+```html
+<h3> Register </h3>
+
+<form method="POST" action="">
+    {% csrf_token %} 
+    {% for field in form %}
+        {{field.label}}
+        {{field}}
+    {% endfor %}
+
+    <input type="submit" name="Create User">
+</form>
+```
+
+
+![](img/ss26.png)
+
+
+Si existe un registro incorrecto no aparecerá ningún mensaje que especifique al usuaria cuál ha sido el error, por lo tanto agregamos esta parte:
+
+```html
+{{form.errors}}
+```
+
+
+[The messages framework | Django documentation | Django](https://docs.djangoproject.com/en/3.0/ref/contrib/messages/#using-messages-in-views-and-templates)
+Después agregamos importamos los mensajes de Django en nuestro archivo ‘views.py’ para especificar que la cuenta ha sido creada de manera correcta:
+
+```python
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.forms import inlineformset_factory
+from django.contrib.auth.forms import UserCreationForm 
+# Importamos los mensajes de Django
+from django.contrib import messages
+
+from .models import *
+from .forms import OrderForm, CreateUserForm
+from .filters import OrderFilter
+
+
+def registerPage(request):
+    form = CreateUserForm()
+
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Mensaje de que la cuenta ha sido creada de manera correcta
+            messages.success(request, 'Account created')
+            return redirect('login')
+
+    context = {'form': form }
+    return render(request, 'accounts/register.html', context)
+```
