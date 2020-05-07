@@ -28,12 +28,12 @@ Luego creamos un Proyecto Django:
 `$ django-admin startproject 'nombre'`
 
 Nota: Es importante recordar que si encontramos el problema de "unresolved import" lo resolveremos de esta manera:
-(Shift + cmd + p) para abri el Comand Palette de VSC y ahí seleccionamos Python. En el source code copiamos esto con la dirección en donde se encuentre nuestro proyecto (con un pwd en el Terminal se podrá saber):
+(Shift + cmd + p) para abrir el Comand Palette de VSC y ahí seleccionamos Python. En el source code copiamos esto con la dirección en donde se encuentre nuestro proyecto (con un pwd en el Terminal se podrá saber):
 
 `”python.pythonPath”: “/path/to/your/venv/bin/python”,`
 
 ## Estructura Inicial
-Se creara una carpeta que tendrá otra carpeta con él mismo nombre y un archivo “manage.py” que no debemos tocar, lo dejaremos solo. Este archivo se utiliza para initializer el proyecto.
+Se creara una carpeta que tendrá otra carpeta con él mismo nombre y un archivo “manage.py” que no debemos tocar, lo dejaremos solo. Este archivo se utiliza para inicializar el proyecto.
 
 En la carpeta habrá 4 documentos:
 
@@ -383,6 +383,7 @@ Relación “Many to many”, por ejemplo una tienda que use ’tags’:
 ![](img/ss15.png)
 
 Para implementar estas relaciones en Django usamos ‘models.ForeignKey’ más la clase que queremos que sea el ‘Parent’, así se vería el ‘models.py’ de nuestra aplicación después de agregar la relación a ‘Order’:
+
 ```python
  from django.db import models
 
