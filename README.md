@@ -1340,8 +1340,11 @@ Si existe un registro incorrecto no aparecerá ningún mensaje que especifique a
 {{form.errors}}
 ```
 
+Documentación:
 
 [The messages framework | Django documentation | Django](https://docs.djangoproject.com/en/3.0/ref/contrib/messages/#using-messages-in-views-and-templates)
+
+
 Después agregamos importamos los mensajes de Django en nuestro archivo ‘views.py’ para especificar que la cuenta ha sido creada de manera correcta:
 
 ```python
@@ -1370,4 +1373,200 @@ def registerPage(request):
 
     context = {'form': form }
     return render(request, 'accounts/register.html', context)
+```
+
+
+
+## Inicio de Usuarios (login)
+En nuestro archivo ‘views.py’ agregamos los imports que necesitamos y luego creamos la función loginPage:
+
+```python
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.forms import inlineformset_factory
+from django.contrib.auth.forms import UserCreationForm 
+# Importamos los requerimientos para nuestra página de inicio
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+
+from .models import *
+from .forms import OrderForm, CreateUserForm
+from .filters import OrderFilter
+.
+.
+.
+# Es importante nunca llamar 'login' a la función ya que interviene con Django
+def loginPage(request):
+
+    if request.method == 'POST':
+        # Asignamos a la variable username el value en nuestro formulario con el mismo nombre
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        # Usamos el import de authenticate
+        user = authenticate(request, username=username, password=password)
+
+        # Si llega a existir un usuario
+        if user is not None:
+            # Usamos el import de login
+            login(request, user)
+            # Nos redirige al home
+            return redirect('home')
+        else:
+            # Mensaje de información
+            messages.info(request, 'Username or Password incorrect')
+
+```
+
+
+### Página de Logout
+
+Para crear la opción de logout en nuestra página tenemos que añadir primero el import a nuestro archivo ‘views.py’ y luego crear a función:
+
+```python
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.forms import inlineformset_factory
+from django.contrib.auth.forms import UserCreationForm 
+# Import de logout
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+
+from .models import *
+from .forms import OrderForm, CreateUserForm
+from .filters import OrderFilter
+.
+.
+.
+def logoutUser(request):
+    # Import de logout
+    logout(request)
+    return redirect('login')
+```
+
+
+
+Después crearemos el url path en nuestro archivo ‘urls.py’ de nuestra aplicación:
+
+```python
+urlpatterns = [
+    path('register/', views.registerPage, name="register"),
+    path('login/', views.loginPage, name="login"),
+		# Logout path
+    path('logout/', views.logoutUser, name="logout"),
+
+    path('', views.home, name="home"),
+    path('products/', views.products, name="products"),
+    path('customer/<str:pk_test>/', views.customer, name="customer"),
+    path('create_order/<str:pk>/', views.createOrder, name="create_order"),
+    path('update_order/<str:pk>/', views.updateOrder, name="update_order"),
+    path('delete_order/<str:pk>/', views.deleteOrder, name="delete_order"),
+]
+```
+
+
+Finalmente agregamos la opción de logout en nuestro navbar del sitio web:
+
+```html
+<!-- Soludo al usuario en el login -->
+    <span class="hello">Hello, {{request.user}}  </span>
+    <!-- Botón para hacer logout -->
+    <span><a class="hello" href="{% url 'logout' %}">Logout</a></span>
+```
+
+
+![](img/ss27.png)
+
+
+### Login Obligatorio (Login Require)
+
+Para tener una página donde sea obligatorio estar ‘login’ en una cuenta, lo primero es hacer el import de ‘login_require’ y en cada función que queremos que tenga el login obligatorio lo escribiremos encima de la función en nuestro archivo ‘views.py’:
+
+```python
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.forms import inlineformset_factory
+from django.contrib.auth.forms import UserCreationForm 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+# Import para que sea obligaorio tener un login
+from django.contrib.auth.decorators import login_required
+
+from .models import *
+from .forms import OrderForm, CreateUserForm
+from .filters import OrderFilter
+.
+.
+.
+# Es necesario esta en tu cuenta para entrar a esta página
+# Sino estas en una cuenta serás enviado a la login page
+@login_required(login_url='login')
+def home(request):
+    orders = Order.objects.all()
+    customers = Customer.objects.all()
+    total_customers = customers.count()
+    total_orders = orders.count()
+    delivered = orders.filter(status='Delivered').count()
+    pending = orders.filter(status='Pending').count()
+
+    context = {'orders': orders, 'customers': customers, 
+    'total_orders': total_orders, 'delivered': delivered, 'pending': pending}
+
+    return render(request, 'accounts/dashboard.html', context)
+```
+
+
+Finalmente, restringimos las páginas de ‘Registro’ e ‘Inicio’ si el usuario ya esta adentro de su cuenta:
+
+```python
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.forms import inlineformset_factory
+from django.contrib.auth.forms import UserCreationForm 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+# Import para que sea obligaorio tener un login
+from django.contrib.auth.decorators import login_required
+
+from .models import *
+from .forms import OrderForm, CreateUserForm
+from .filters import OrderFilter
+
+
+def registerPage(request):
+    # Si el usuario ya esta en su cuenta e intenta ir a la página de registro
+    if request.user.is_authenticated:
+        # Lo devolvemos a la página del dashboard
+        return redirect('home')
+    else:
+        form = CreateUserForm()
+        if request.method == 'POST':
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Account created successfully')
+                return redirect('login')
+
+        context = {'form': form }
+        return render(request, 'accounts/register.html', context)
+
+
+def loginPage(request):
+    # Si el usuario ya esta en su cuenta e intenta ir a la página de login
+    if request.user.is_authenticated:
+        # Lo devolvemos a la página del dashboard
+        return redirect('home')
+    else:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.info(request, 'Username or Password incorrect')
+
+        context = {}
+        return render(request, 'accounts/login.html', context)
 ```
