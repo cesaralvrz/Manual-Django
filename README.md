@@ -1341,7 +1341,6 @@ Si existe un registro incorrecto no aparecerá ningún mensaje que especifique a
 ```
 
 Documentación:
-
 [The messages framework | Django documentation | Django](https://docs.djangoproject.com/en/3.0/ref/contrib/messages/#using-messages-in-views-and-templates)
 
 
@@ -1467,7 +1466,7 @@ urlpatterns = [
 Finalmente agregamos la opción de logout en nuestro navbar del sitio web:
 
 ```html
-<!-- Soludo al usuario en el login -->
+<!-- Saludo al usuario en el login -->
     <span class="hello">Hello, {{request.user}}  </span>
     <!-- Botón para hacer logout -->
     <span><a class="hello" href="{% url 'logout' %}">Logout</a></span>
