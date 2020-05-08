@@ -1569,3 +1569,79 @@ def loginPage(request):
         context = {}
         return render(request, 'accounts/login.html', context)
 ```
+
+
+## Redirección de Permisos
+
+Como vimos en el apartado anterior podemos hacer ‘Redirect’  ciertas páginas cuando el usuario cumple ciertas condiciones, para no tener que escribir esto en cada función de nuestro ‘views.py’ creamos una función para cada permiso, lo primero para crear esto es creando un nuevo archivo en nuestra app con el nombre ‘decorators.py’ donde importaremos el HttpResponse y el redirect y crearemos la función:
+
+```python
+from django.http import HttpResponse
+from django.shortcuts import redirect
+
+# Función para validar si el usuario esta registrado o no
+def unauthenticated_user(views_func):
+    def wrapper_func(request, *args, **kwargs):
+        # Si el usuario ya esta en su cuenta e intenta ir a la página de login
+        if request.user.is_authenticated:
+            # Lo devolvemos a la página del dashboard
+            return redirect('home')
+        else:
+            # Se devuelva la función de nuestro archivo views.py
+            return views_func(request, *args, **kwargs)
+
+    return wrapper_func
+```
+
+
+Ahora solo tenemos que poner importar la función del decorator y ponerla encima de la función del ‘views.py’ que queremos ‘restringir’ con un ‘@‘:
+
+```python
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.forms import inlineformset_factory
+from django.contrib.auth.forms import UserCreationForm 
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+from .models import *
+from .forms import OrderForm, CreateUserForm
+from .filters import OrderFilter
+# Importamos la función del archivo decorators.py
+from .decorators import unauthenticated_user
+
+
+# Agregamos la función de decorators.py
+@unauthenticated_user
+def registerPage(request):
+    form = CreateUserForm()
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Account created successfully')
+            return redirect('login')
+
+    context = {'form': form }
+    return render(request, 'accounts/register.html', context)
+
+# Agregamos la función de decorators.py
+@unauthenticated_user
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.info(request, 'Username or Password incorrect')
+
+    context = {}
+    return render(request, 'accounts/login.html', context)
+```
+
+
