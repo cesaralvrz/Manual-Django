@@ -1645,3 +1645,119 @@ def loginPage(request):
 ```
 
 
+Subir la Página Web en Heroku
+Primero tenemos que meternos a nuestra cuenta de heroku.com y crear la app para nuestro proyecto. (También se puede crear desde la terminal)
+
+Más Información:
+https://devcenter.heroku.com/articles/git
+
+Ahora necesitamos tener instalado Git y Heroku CLI en nuestro ordenador.
+Escribiremos los siguientes comandos en nuestro terminal:
+
+Login en Heroku:
+
+`$ heroku login`
+
+
+Creamos el repositorio:
+
+`$ git init`
+
+
+Añadimos todos los archivos al repositorio:
+
+`$ git add .`
+
+
+Primero commit del proyecto:
+
+`$ git commit -m "My first commit"`
+
+
+Identificamos el proyecto de Heroku:
+
+`$ heroku git:remote -a crm-cesaralvarez`
+
+
+Verificar:
+
+`$ git remote`
+
+`$ git remote -v`
+
+
+Instalamos Gunicorn:
+
+`$ pip install gunicorn whitenoise`
+
+
+Guardamos los requerimiento en un archivo txt:
+
+`$ pip freeze > requirements.txt`
+
+
+Creamos archivo ‘Procfile’ sin ninguna extensión en nuestro proyecto donde escribiremos lo siguiente (customer es nombre de la carpeta que contiene el archivo ‘wsgi’):
+
+```python
+web: gunicorn customer.wsgi --log-file -
+```
+
+
+Ahora en nuestro archivo ‘settings.py’ agregamos lo siguiente:
+
+```python
+.
+.
+.
+# DEBGUG en FALSE !!!
+DEBUG = False
+
+# Agregamos los hosts que permiten correr la página
+ALLOWED_HOSTS = ['crm-cesaralvarez.herokuapp.com', '127.0.0.1']
+.
+.
+.
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+
+    # Agregamos esto
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+.
+.
+.
+# Agregamos esto
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+
+MEDIA_URLS ='/images/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+```
+
+
+En la página de Heroku en el apartado ’settings’ en ‘Add Buildpack’ y escogemos Python
+
+![](img/ss28.png)
+
+
+Ahora necesitamos crear el repositorio del proyecto en GitHub y escribimos los siguientes comandos:
+
+`$ git remote add origin https://github.com/cesaralvrz/CRM-Django.git`
+
+
+`$ git push -u origin master`
+
+
+Luego en el apartado de ‘Deploy’ de Heroku, conectamos nuestra cuenta de Github y el repositorio del proyecto, finalmente hacemos click en ‘Deploy Branch’ y la página estará live en internet.
