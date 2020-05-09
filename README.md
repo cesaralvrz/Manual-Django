@@ -1691,7 +1691,7 @@ Guardamos los requerimiento en un archivo txt:
 
 Creamos archivo ‘Procfile’ sin ninguna extensión en nuestro proyecto donde escribiremos lo siguiente (customer es nombre de la carpeta que contiene el archivo ‘wsgi’):
 
-```python
+```
 web: gunicorn customer.wsgi --log-file -
 ```
 
