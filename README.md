@@ -1655,44 +1655,36 @@ Ahora necesitamos tener instalado Git y Heroku CLI en nuestro ordenador.
 Escribiremos los siguientes comandos en nuestro terminal:
 
 Login en Heroku:
-
 `$ heroku login`
 
 
 Creamos el repositorio:
-
 `$ git init`
 
 
 Añadimos todos los archivos al repositorio:
-
 `$ git add .`
 
 
 Primero commit del proyecto:
-
 `$ git commit -m "My first commit"`
 
 
 Identificamos el proyecto de Heroku:
-
 `$ heroku git:remote -a crm-cesaralvarez`
 
 
 Verificar:
-
 `$ git remote`
 
 `$ git remote -v`
 
 
 Instalamos Gunicorn:
-
 `$ pip install gunicorn whitenoise`
 
 
 Guardamos los requerimiento en un archivo txt:
-
 `$ pip freeze > requirements.txt`
 
 
@@ -1756,8 +1748,8 @@ Ahora necesitamos crear el repositorio del proyecto en GitHub y escribimos los s
 
 `$ git remote add origin https://github.com/cesaralvrz/CRM-Django.git`
 
-
 `$ git push -u origin master`
+
 
 
 Luego en el apartado de ‘Deploy’ de Heroku, conectamos nuestra cuenta de Github y el repositorio del proyecto, finalmente hacemos click en ‘Deploy Branch’ y la página estará live en internet.
