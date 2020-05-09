@@ -1675,6 +1675,7 @@ Identificamos el proyecto de Heroku:
 
 
 Verificar:
+
 `$ git remote`
 
 `$ git remote -v`
