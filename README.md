@@ -1689,7 +1689,7 @@ Guardamos los requerimiento en un archivo txt:
 `$ pip freeze > requirements.txt`
 
 
-Creamos archivo ‘Procfile’ sin ninguna extensión en nuestro proyecto donde escribiremos lo siguiente (customer es nombre de la carpeta que contiene el archivo ‘wsgi’):
+Creamos archivo ‘Procfile’ sin ninguna extensión en nuestro proyecto donde escribiremos lo siguiente (customer es nombre de la carpeta que contiene el archivo ‘wsgi’ hay que cambiarla respectivamente):
 
 ```
 web: gunicorn customer.wsgi --log-file -
